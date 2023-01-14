@@ -7,21 +7,30 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import javax.ws.rs.NotFoundException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@SpringBootTest
+@AutoConfigureMockMvc
 public class TutorialControllerTest {
     @Autowired
     MockMvc mockMvc;
@@ -30,12 +39,12 @@ public class TutorialControllerTest {
     @MockBean
     TutorialRepository tutorialRepository;
 
-    Tutorial tutorial1 = new Tutorial("adw","daw",true);
-    Tutorial tutorial2 = new Tutorial("adwadw","dagdrw",true);
-    Tutorial tutorial3 = new Tutorial("adfsew","dhfaw",true);
+    Tutorial tutorial1 = new Tutorial(1,"adw","daw",true);
+    Tutorial tutorial2 = new Tutorial(2,"adwadw","dagdrw",true);
+    Tutorial tutorial3 = new Tutorial(3,"adfsew","dhfaw",true);
 
     @Test
-    public void getAllRecords_success() throws Exception {
+    public void getAllTutorial() throws Exception {
         List<Tutorial> records = new ArrayList<>(Arrays.asList(tutorial1, tutorial2, tutorial3));
 
         Mockito.when(tutorialRepository.findAll()).thenReturn(records);
@@ -46,5 +55,7 @@ public class TutorialControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(3)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[2].title", Matchers.is("adfsew")));
+
     }
+
 }

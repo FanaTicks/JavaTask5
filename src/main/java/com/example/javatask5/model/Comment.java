@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comment_generator")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @Lob
     private  String content;
@@ -24,6 +24,10 @@ public class Comment {
     @ManyToOne()
     @JoinColumn(name = "tutorial_id")
     private  Tutorial tutorial;
-
+/*
+    public Comment(String content, Tutorial tutorial) {
+        this.content = content;
+        this.tutorial = tutorial;
+    }*/
 }
 

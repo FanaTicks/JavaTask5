@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface CommentRepository extends JpaRepository<Comment, String> {
+public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
    List<Comment> findCommentByContentAndAndTutorial(String content, Tutorial tutorial);
 }

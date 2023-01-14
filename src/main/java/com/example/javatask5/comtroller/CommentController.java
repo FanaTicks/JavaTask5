@@ -9,12 +9,11 @@ import com.example.javatask5.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.ws.rs.NotFoundException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import static org.springframework.data.jpa.domain.Specification.where;
 
 
 @RestController
@@ -35,8 +34,8 @@ public class CommentController {
         return commentRepository.findCommentByContentAndAndTutorial(content,tutorial_id);
     }
 
-    @PostMapping
-    public Comment createComment(@RequestBody Comment comment) {
+    @PostMapping("/add")
+    public Comment createComment(@RequestBody @Valid Comment comment) {
         return commentRepository.save(comment);
     }
 
@@ -59,8 +58,8 @@ public class CommentController {
         return save;
     }
 
-    @DeleteMapping(value = "{id}")
-    public void deleteComment(@PathVariable(value = "id") String id) throws NotFoundException {
+    @DeleteMapping(value = "/delete/{id}")
+    public void deleteComment(@PathVariable(value = "id") Integer id) throws NotFoundException {
         if (commentRepository.findById(id).isEmpty()) {
             throw new NotFoundException("Patient with ID " + id + " does not exist.");
         }

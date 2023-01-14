@@ -2,16 +2,22 @@ package com.example.javatask5.model;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Entity
 @Table(name = "tutorials")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Tutorial {
-
-
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tutorial_generator")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @Column(name = "title")
     private String title;
@@ -21,39 +27,11 @@ public class Tutorial {
 
     @Column(name = "published")
     private boolean published;
-
-    public Tutorial() {
-
-    }
-
+/*
     public Tutorial(String title, String description, boolean published) {
         this.title = title;
         this.description = description;
         this.published = published;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setPublished(boolean published) {
-        this.published = published;
-    }
-
-    public boolean isPublished() {
-        return published;
-    }
+    }*/
 }
 

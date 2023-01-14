@@ -1,4 +1,98 @@
 package com.example.javatask5;
 
+import com.example.javatask5.model.Comment;
+import com.example.javatask5.model.Tutorial;
+import com.example.javatask5.repository.CommentRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SpringBootTest
+@AutoConfigureMockMvc
 public class CommentControllerTest {
+
+    @Autowired
+    MockMvc mockMvc;
+    @Autowired
+    ObjectMapper mapper;
+    @MockBean
+    CommentRepository commentRepository;
+
+    @AfterEach
+    public void resetDb() {
+        commentRepository.deleteAll();
+    }
+
+    Comment comment1 = new Comment(1,"adw",new Tutorial(1,"adw","daw",true));
+    Comment comment2 = new Comment(2,"adwadw",new Tutorial(2,"adwadw","dagdrw",true));
+    Comment comment3 = new Comment(3,"adfsew",new Tutorial(3,"adfsew","dhfaw",true));
+
+    @Test
+    public void contectLoads() throws Exception{
+        assertThat(commentRepository).isNotNull();
+    }
+
+    @Test
+    public void getAllComment() throws Exception {
+        List<Comment> records = new ArrayList<>(Arrays.asList(comment1, comment2, comment3));
+
+        Mockito.when(commentRepository.findAll()).thenReturn(records);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/comments")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(3)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].content", Matchers.is("adfsew")));
+
+    }
+
+    @Test
+    public void createComment_success() throws Exception {
+        Comment comment = new Comment(4,"aaa",new Tutorial(4,"adw","daw",true));
+
+        Mockito.when(commentRepository.save(comment)).thenReturn(comment);
+
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/api/add")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(String.valueOf(comment));
+
+        mockMvc.perform(mockRequest)
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.notNullValue()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].content", Matchers.is("aaa")));
+    }
+
+    @Test
+    public void deleteCommentById() throws Exception {
+        Mockito.when(commentRepository.findById(comment2.getId())).thenReturn(Optional.of(comment2));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/api/delete/2")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
 }

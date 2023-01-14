@@ -124,6 +124,11 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-test:6.0.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.xmlunit:xmlunit-core:2.9.0" level="project" />
     <orderEntry type="library" name="Maven: javax.ws.rs:javax.ws.rs-api:2.1.1" level="project" />
+    <orderEntry type="library" name="Maven: xerces:xercesImpl:2.12.2" level="project" />
+    <orderEntry type="library" name="Maven: xml-apis:xml-apis:1.4.01" level="project" />
     <orderEntry type="library" name="Maven: org.projectlombok:lombok:1.18.24" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.13.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:2.2" level="project" />
+    <orderEntry type="library" name="Maven: javax.validation:validation-api:2.0.1.Final" level="project" />
   </component>
 </module>
