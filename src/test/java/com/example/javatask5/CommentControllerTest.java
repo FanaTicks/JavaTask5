@@ -86,6 +86,24 @@ public class CommentControllerTest {
     }
 
     @Test
+    public void updateCommentRecord_success() throws Exception {
+        Comment comment = new Comment(4,"aaa",new Tutorial(4,"adw","daw",true));
+
+        Mockito.when(commentRepository.findById(comment1.getId())).thenReturn(Optional.of(comment1));
+        Mockito.when(commentRepository.save(comment)).thenReturn(comment);
+
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/patient")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(this.mapper.writeValueAsString(comment));
+
+        mockMvc.perform(mockRequest)
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.notNullValue()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].content", Matchers.is("aaa")));
+    }
+
+    @Test
     public void deleteCommentById() throws Exception {
         Mockito.when(commentRepository.findById(comment2.getId())).thenReturn(Optional.of(comment2));
 
