@@ -39,7 +39,7 @@ public class CommentController {
         return commentRepository.save(comment);
     }
 
-    @PutMapping
+    @PutMapping("/update")
     public Comment updateComment(@RequestBody Comment comment) throws NotFoundException {
         if (comment == null || comment.getId() == null) {
             throw new InvalidRequestException("PatientRecord or ID must not be null!");

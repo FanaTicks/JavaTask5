@@ -100,20 +100,33 @@ public class CommentControllerTest {
 
     @Test
     public void updateCommentRecord_success() throws Exception {
-        Comment comment = new Comment(4,"aaa",new Tutorial(4,"adw","daw",true));
+
+
+        Tutorial tutorial = Tutorial.builder()
+                .id(1)
+                .title("adw")
+                .description("daw")
+                .published(true)
+                .build();
+
+        Comment record = Comment.builder()
+                .id(1)
+                .content("47")
+                .tutorial(tutorial)
+                .build();
 
         Mockito.when(commentRepository.findById(comment1.getId())).thenReturn(Optional.of(comment1));
-        Mockito.when(commentRepository.save(comment)).thenReturn(comment);
+        Mockito.when(commentRepository.save(record)).thenReturn(record);
 
-        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/api")
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.put("/api/update")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(this.mapper.writeValueAsString(comment));
+                .content(this.mapper.writeValueAsString(record));
 
         mockMvc.perform(mockRequest)
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.notNullValue()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[2].content", Matchers.is("aaa")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.is("47")));
     }
 
     @Test
