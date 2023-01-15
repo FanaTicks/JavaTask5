@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Lob

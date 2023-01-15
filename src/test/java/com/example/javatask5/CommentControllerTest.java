@@ -70,7 +70,8 @@ public class CommentControllerTest {
 
     @Test
     public void createComment_success() throws Exception {
-        Comment comment = new Comment(4,"aaa",new Tutorial(4,"adw","daw",true));
+        Tutorial tutorial =new Tutorial(1,"awd","sf",true);
+        Comment comment = new Comment(2,"aaa",tutorial);
 
         Mockito.when(commentRepository.save(comment)).thenReturn(comment);
 
@@ -92,7 +93,7 @@ public class CommentControllerTest {
         Mockito.when(commentRepository.findById(comment1.getId())).thenReturn(Optional.of(comment1));
         Mockito.when(commentRepository.save(comment)).thenReturn(comment);
 
-        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/patient")
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/api")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(this.mapper.writeValueAsString(comment));
