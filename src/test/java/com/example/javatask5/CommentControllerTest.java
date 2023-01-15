@@ -70,20 +70,32 @@ public class CommentControllerTest {
 
     @Test
     public void createComment_success() throws Exception {
-        Tutorial tutorial =new Tutorial(1,"awd","sf",true);
-        Comment comment = new Comment(2,"aaa",tutorial);
 
-        Mockito.when(commentRepository.save(comment)).thenReturn(comment);
+
+
+        Tutorial tutorial = Tutorial.builder()
+                .id(2)
+                .title("47")
+                .description("fes")
+                .published(true)
+                .build();
+
+        Comment record = Comment.builder()
+                .id(2)
+                .content("47")
+                .tutorial(tutorial)
+                .build();
+        Mockito.when(commentRepository.save(record)).thenReturn(record);
 
         MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/api/add")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(String.valueOf(comment));
+                .content(this.mapper.writeValueAsString(record));
 
         mockMvc.perform(mockRequest)
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.notNullValue()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[2].content", Matchers.is("aaa")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.is("47")));
     }
 
     @Test
