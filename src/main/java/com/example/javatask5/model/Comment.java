@@ -23,10 +23,6 @@ public class Comment {
     @ManyToOne()
     @JoinColumn(name = "tutorial_id")
     private  Tutorial tutorial;
-/*
-    public Comment(String content, Tutorial tutorial) {
-        this.content = content;
-        this.tutorial = tutorial;
-    }*/
+
 }
 
