@@ -1,5 +1,6 @@
 package com.example.javatask5;
 
+import com.example.javatask5.comtroller.CommentController;
 import com.example.javatask5.model.Comment;
 import com.example.javatask5.model.Tutorial;
 import com.example.javatask5.repository.CommentRepository;
@@ -20,12 +21,15 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import javax.ws.rs.NotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -74,7 +78,7 @@ public class CommentControllerTest {
 
     @Test
     public void getCommentsByTutorialId() throws Exception {
-        List<Comment> records = new ArrayList<>(Arrays.asList(comment1, comment2, comment3, comment4, comment5, comment6, comment7));
+        List<Comment> records = new ArrayList<>(Arrays.asList(comment1, comment2, comment3,comment4,comment5,comment6,comment7));
 
         Mockito.when(commentRepository.findCommentByContentAndAndTutorial("adw", new Tutorial(1,"adw","daw",true))).thenReturn(records);
 
@@ -82,8 +86,8 @@ public class CommentControllerTest {
                         .get("/api/comment/adw/1/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(3)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[2].content", Matchers.is("adfsew")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(5)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is("1")));
 
     }
 
@@ -146,6 +150,63 @@ public class CommentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.notNullValue()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.is("47")));
+    }
+
+    @Test
+    public void updatePatientRecord_nullId() throws Exception {
+        Tutorial tutorial = Tutorial.builder()
+                .title("adw")
+                .description("daw")
+                .published(true)
+                .build();
+
+        Comment record = Comment.builder()
+                .id(1)
+                .content("47")
+                .tutorial(tutorial)
+                .build();
+
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.put("/api/update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(this.mapper.writeValueAsString(tutorial));
+
+        mockMvc.perform(mockRequest)
+                .andExpect(status().isBadRequest())
+                .andExpect(result ->
+                        assertTrue(result.getResolvedException() instanceof CommentController.InvalidRequestException))
+                .andExpect(result ->
+                        assertEquals("Comment or ID must not be null!", result.getResolvedException().getMessage()));
+    }
+
+    @Test
+    public void updatePatientRecord_recordNotFound() throws Exception {
+        Tutorial tutorial = Tutorial.builder()
+                .id(1)
+                .title("adw")
+                .description("daw")
+                .published(true)
+                .build();
+
+        Comment record = Comment.builder()
+                .id(1000)
+                .content("47")
+                .tutorial(tutorial)
+                .build();
+
+        Mockito.when(commentRepository.findById(record.getId())).thenReturn(null);
+
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.put("/api/update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(this.mapper.writeValueAsString(record));
+
+        mockMvc.perform(mockRequest)
+                .andExpect(status().isBadRequest())
+                .andExpect(result ->
+                        assertTrue(result.getResolvedException() instanceof NotFoundException))
+                .andExpect(result ->
+                        assertEquals("Comment with ID 1000 does not exist.", result.getResolvedException().getMessage()));
     }
 
     @Test

@@ -1,15 +1,17 @@
 package com.example.javatask5.comtroller;
 
-import com.example.javatask5.exception.InvalidRequestException;
 import com.example.javatask5.model.Comment;
 import com.example.javatask5.model.Tutorial;
 import com.example.javatask5.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.ws.rs.NotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -26,7 +28,7 @@ public class CommentController {
     }
 
     @GetMapping(value = "/comment/{content}/{tutorial_id}/{page}")
-    public List<Comment> getCommentsByTutorialId(@PathVariable(value="content") String content,@PathVariable(value="tutorial_id") Tutorial tutorial_id,@PathVariable(value="number") Integer page) {
+    public List<Comment> getCommentsByTutorialId(@PathVariable(value="content") String content,@PathVariable(value="tutorial_id") Tutorial tutorial_id,@PathVariable(value="page") Integer page) {
         List<Comment> list = commentRepository.findCommentByContentAndAndTutorial(content,tutorial_id);
         List<Comment> listFinish = new ArrayList<>();
         double  limit = page*5;
@@ -44,6 +46,13 @@ public class CommentController {
     @PostMapping("/add")
     public Comment createComment(@RequestBody @Valid Comment comment) {
         return commentRepository.save(comment);
+    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public
+    class InvalidRequestException extends RuntimeException {
+        public InvalidRequestException(String s) {
+            super(s);
+        }
     }
 
     @PutMapping("/update")
