@@ -48,8 +48,6 @@ public class CommentControllerTest {
     Comment comment1 = new Comment(1,"adw",new Tutorial(1,"adw","daw",true));
     Comment comment2 = new Comment(2,"adwadw",new Tutorial(2,"adwadw","dagdrw",true));
     Comment comment3 = new Comment(3,"adfsew",new Tutorial(3,"adfsew","dhfaw",true));
-    Comment comment4 = new Comment(4,"adw",new Tutorial(1,"adw","daw",true));
-    Comment comment5 = new Comment(5,"adw",new Tutorial(1,"adw","daw",true));
     Comment comment6 = new Comment(6,"adw",new Tutorial(1,"adw","daw",true));
     Comment comment7 = new Comment(7,"adw",new Tutorial(1,"adw","daw",true));
 
