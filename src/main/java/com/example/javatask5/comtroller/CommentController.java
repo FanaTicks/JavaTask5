@@ -21,7 +21,7 @@ public class CommentController {
 
 
     @GetMapping("/comments")
-    public List<Comment> getAllTutorials() {
+    public List<Comment> getAllComments() {
         return commentRepository.findAll();
     }
 

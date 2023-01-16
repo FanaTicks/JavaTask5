@@ -47,6 +47,10 @@ public class CommentControllerTest {
     Comment comment1 = new Comment(1,"adw",new Tutorial(1,"adw","daw",true));
     Comment comment2 = new Comment(2,"adwadw",new Tutorial(2,"adwadw","dagdrw",true));
     Comment comment3 = new Comment(3,"adfsew",new Tutorial(3,"adfsew","dhfaw",true));
+    Comment comment4 = new Comment(4,"adw",new Tutorial(1,"adw","daw",true));
+    Comment comment5 = new Comment(5,"adw",new Tutorial(1,"adw","daw",true));
+    Comment comment6 = new Comment(6,"adw",new Tutorial(1,"adw","daw",true));
+    Comment comment7 = new Comment(7,"adw",new Tutorial(1,"adw","daw",true));
 
     @Test
     public void contectLoads() throws Exception{
@@ -61,6 +65,21 @@ public class CommentControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/api/comments")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(3)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].content", Matchers.is("adfsew")));
+
+    }
+
+    @Test
+    public void getCommentsByTutorialId() throws Exception {
+        List<Comment> records = new ArrayList<>(Arrays.asList(comment1, comment2, comment3, comment4, comment5, comment6, comment7));
+
+        Mockito.when(commentRepository.findCommentByContentAndAndTutorial("adw", new Tutorial(1,"adw","daw",true))).thenReturn(records);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/comment/adw/1/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(3)))
