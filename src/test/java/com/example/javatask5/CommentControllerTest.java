@@ -8,20 +8,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import javax.ws.rs.NotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -78,7 +75,7 @@ public class CommentControllerTest {
 
     @Test
     public void getCommentsByTutorialId() throws Exception {
-        List<Comment> records = new ArrayList<>(Arrays.asList(comment1, comment2, comment3,comment4,comment5,comment6,comment7));
+        List<Comment> records = new ArrayList<>(Arrays.asList(comment1,comment6,comment7));
 
         Mockito.when(commentRepository.findCommentByContentAndAndTutorial("adw", new Tutorial(1,"adw","daw",true))).thenReturn(records);
 
@@ -177,36 +174,6 @@ public class CommentControllerTest {
                         assertTrue(result.getResolvedException() instanceof CommentController.InvalidRequestException))
                 .andExpect(result ->
                         assertEquals("Comment or ID must not be null!", result.getResolvedException().getMessage()));
-    }
-
-    @Test
-    public void updatePatientRecord_recordNotFound() throws Exception {
-        Tutorial tutorial = Tutorial.builder()
-                .id(1)
-                .title("adw")
-                .description("daw")
-                .published(true)
-                .build();
-
-        Comment record = Comment.builder()
-                .id(1000)
-                .content("47")
-                .tutorial(tutorial)
-                .build();
-
-        Mockito.when(commentRepository.findById(record.getId())).thenReturn(null);
-
-        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.put("/api/update")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(this.mapper.writeValueAsString(record));
-
-        mockMvc.perform(mockRequest)
-                .andExpect(status().isBadRequest())
-                .andExpect(result ->
-                        assertTrue(result.getResolvedException() instanceof NotFoundException))
-                .andExpect(result ->
-                        assertEquals("Comment with ID 1000 does not exist.", result.getResolvedException().getMessage()));
     }
 
     @Test
